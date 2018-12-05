@@ -23,7 +23,8 @@ class Option implements Comparable<Option> {
 
     @Override
     public int compareTo(Option t1) {
-        return this.score < t1.score ? 1 : this.score == t1.score ? (this.distance < t1.distance ? -1 : 1) : -1;
+        return this.score < t1.score ? 1 : this.score == t1.score
+                ? this.angle_diff < t1.angle_diff ? -1:(this.distance < t1.distance ? -1 : 1) : -1;
     }
 }
 
@@ -33,11 +34,11 @@ class Strategy {
 
     static Player[] init_players() {
         Player[] players = new Player[5];
-        players[0] = new Player("0", new Position(-6.5, 0.0));
-        players[1] = new Player("1", new Position(-5.2, 0.8));
-        players[2] = new Player("2", new Position(-5.2, -0.8));
-        players[3] = new Player("3", new Position(-2.2, 2));
-        players[4] = new Player("4", new Position(-2, -2));
+        players[0] = new Player("0", new Position(-6.3, 1.3));
+        players[1] = new Player("1", new Position(-6.1, 0));
+        players[2] = new Player("2", new Position(-6.3, -1.3));
+        players[3] = new Player("3", new Position(-1, 0));
+        players[4] = new Player("4", new Position(-3, 2));
 
 
         return players;
@@ -122,7 +123,7 @@ class Strategy {
         for (int i = 0; i < 5; i++) {
             double px = game.getMyTeam().getPlayer(i).getPosition().getX();
             double py = game.getMyTeam().getPlayer(i).getPosition().getY();
-            if (py <= 1.6 && py >= -1.6 && Distance(px,py,0,0) <= 3)
+            if (py <= 1.6 && py >= -1.6 && Distance(px,py,-7,0) <= 3 && px<Ball_Cor.x)
                 tedad++;
         }
         if (tedad < 3)
@@ -134,65 +135,6 @@ class Strategy {
     //From Start to here is Ok :)Trusted(:
     //From Start to here is Ok :)Trusted(:
 
-//    private static double find_annoy(Cor A, Cor B, boolean ball, int Player_id, Game game) {
-//        double annoys = 0;
-//        for (int i = 0; i < 5; i++) {
-//            if (i == Player_id) continue;
-//            double P_x = game.getMyTeam().getPlayer(i).getPosition().getX();
-//            double P_y = game.getMyTeam().getPlayer(i).getPosition().getY();
-//
-////            if (Player_id == 0&&i == 4) {
-////                System.out.println("O_o,1annoys:" + annoys + ",id:" + Player_id+",player_x:"+P_x+",player_y:"+P_y);
-////                System.out.println("O_o,X and Y of Player 4:,name:"+game.getMyTeam().getPlayer(Player_id).getName()+",x:"+game.getMyTeam().getPlayer(4).getPosition().getX()
-////                        +",y:"+game.getMyTeam().getPlayer(Player_id).getPosition().getY());
-////            }
-//            if (ball) {
-//                if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) <= 0.75) {
-//
-//                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
-//                        annoys++;
-//                    }
-//                }
-//            } else {
-//                if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) <= 1) {
-//                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
-//                        annoys += 1.1 - (Math.abs(0.5 - dotline(P_x, P_y, A.x, A.y, B.x, B.y)) * 2);
-//                    }
-//                }
-//            }
-////            if (Player_id == 0&&i == 4) {
-////                System.out.println("O_o,2annoys:" + annoys + ",id:" + Player_id+",player_X:"+P_x+",Player_Y:"+P_y);
-////            }
-//        }
-//        for (int i = 0; i < 5; i++) {
-//            double P_x = game.getOppTeam().getPlayer(i).getPosition().getX();
-//            double P_y = game.getOppTeam().getPlayer(i).getPosition().getY();
-//
-//            if (ball) {
-//                if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) <= 0.75) {
-//                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
-//                        annoys++;
-//                    }
-//                } else {
-////                    if (Player_id == 3 &&  i ==3) {
-////                        System.out.println("P_x:" + P_x + ",P_y:" + P_y + " ,and dotline:" + dotline(P_x, P_y, A.x, A.y, B.x, B.y) + ",Gate_y:" + B.y);
-////
-////                    }
-//                }
-//            } else {
-//
-//                if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) <= 1) {
-//                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
-//                        annoys += 1.1 - (Math.abs(0.5 - dotline(P_x, P_y, A.x, A.y, B.x, B.y)) * 2);
-//                    }
-//                }
-//            }
-//        }
-////        System.out.println("annoys:"+annoys+" , id:"+ Player_id +" , Ax:"+A.x+", y:"+A.y +" , Bx:"+B.x+", y:"+B.y);
-//
-//        return annoys;
-//    }
-
     private static double find_annoy(Cor A, Cor B, boolean ball, int Player_id, Game game) {
         double annoys = 0;
         for (int i = 0; i < 5; i++) {
@@ -202,15 +144,15 @@ class Strategy {
             if (ball) {
                 if (dotline(P_x, P_y, A.x, A.y, B.x, B.y) <= 0.75) {
 
-                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
+                    if (Distance(A.x, A.y, B.x, B.y) >= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
                         annoys++;
 
                     }
                 }
             } else {
                 if (dotline(P_x, P_y, A.x, A.y, B.x, B.y) <= 1) {
-                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
-                        annoys += 1.1 - (Math.abs(0.5 - dotline(P_x, P_y, A.x, A.y, B.x, B.y)) * 2);
+                    if (Distance(A.x, A.y, B.x, B.y) >= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
+                        annoys += 1.7 - (Math.abs(0.5 - dotline(P_x, P_y, A.x, A.y, B.x, B.y)) * 2);
                     }
                 }
             }
@@ -222,15 +164,15 @@ class Strategy {
 
             if (ball) {
                 if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) < 0.75) {
-                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
+                    if (Distance(A.x, A.y, B.x, B.y) >= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
                         annoys++;
                     }
                 }
             } else {
 
                 if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) < 1) {
-                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
-                        annoys += 1.1 - (Math.abs(0.5 - dotline(P_x, P_y, A.x, A.y, B.x, B.y)) * 2);
+                    if (Distance(A.x, A.y, B.x, B.y) >= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
+                        annoys += 1.7 - (Math.abs(0.5 - dotline(P_x, P_y, A.x, A.y, B.x, B.y)) * 2);
                     }
                 }
             }
@@ -269,7 +211,7 @@ class Strategy {
     private static int get_Score(Cor Player_Cor, Cor Ball_Cor, Cor Gate_Cor, int i, int Player_id, Game game, Option option) {
         int score = 0;
         if (i == 0) {
-            score -= find_annoy(Player_Cor, find_tok(Ball_Cor, Gate_Cor, true), false, Player_id, game) * 8;
+            score -= find_annoy(Player_Cor, find_tok(Ball_Cor, Gate_Cor, true), false, Player_id, game) * 6;
             score -= find_annoy(Ball_Cor, Gate_Cor, true, Player_id, game) * 4;
             option.annoys = (find_annoy(Player_Cor, find_tok(Ball_Cor, Gate_Cor, true), false, Player_id, game) +
                     find_annoy(Ball_Cor, Gate_Cor, true, Player_id, game));
@@ -310,7 +252,7 @@ class Strategy {
             if (ball_shadow.x <= -7 || ball_shadow.x >= 7) {
                 score -= 9999;
             }
-            score -= find_annoy(Player_Cor, Ball_Cor, false, Player_id, game) * 8;
+            score -= find_annoy(Player_Cor, Ball_Cor, false, Player_id, game) * 6;
             score -= find_annoy(Ball_Cor, ball_shadow, true, Player_id, game) * 4;
             score -= find_annoy(ball_shadow, Gate_Cor, true, Player_id, game) * 4;
             option.annoys =  (find_annoy(Player_Cor, Ball_Cor, false, Player_id, game) +
@@ -342,7 +284,7 @@ class Strategy {
             double player_ball_distance = Distance(Player_Cor.x, Player_Cor.y, Ball_Cor.x, Ball_Cor.y);
             player_ball_distance += Distance(Ball_Cor.x, Ball_Cor.y, Gate_Cor.x, Gate_Cor.y)/2;
             score -= (2*player_ball_distance);
-            score += Math.abs(0.3*score);
+            score += Math.abs(0.2*score);
             option.distance = (int) ((player_ball_distance));
         }
 //        if (score < 4)
@@ -352,11 +294,8 @@ class Strategy {
 
     private static PriorityQueue<Option> Formula(Cor Player_Cor, Cor Ball_Cor, int player_id, Game game) {
         PriorityQueue<Option> priorityQueue = new PriorityQueue<>();
-        for (int j =2; j < 24; j++) {
+        for (int j =0; j < 24; j++) {
             Cor Gate_Cor = new Cor(7, -1.15 + (j * 0.1));
-            if (j ==23){
-                Gate_Cor = new Cor(4,1.13);
-            }
             for (int i = 0; i < 4; i++) {
 
                 if (i == 0) {
@@ -383,7 +322,7 @@ class Strategy {
                     option.score = get_Score(Player_Cor, Ball_Cor, Gate_Cor, 2, player_id, game, option);
                     option.des = ball_shadow;
                     priorityQueue.add(option);
-                }else{
+                }else if (Distance(Ball_Cor.x,Ball_Cor.y,Gate_Cor.x,Gate_Cor.y)>5){
                     // direct shoot without tok
                     int angle2 = find_angle(Player_Cor, Ball_Cor);
                     Option option2 = new Option(angle2, player_id);
@@ -391,6 +330,32 @@ class Strategy {
                     option2.des = Gate_Cor;
                     priorityQueue.add(option2);
                 }
+            }
+        }
+        return priorityQueue;
+    }
+
+    private static PriorityQueue<Option> Formula(Cor Player_Cor, Cor Ball_Cor, int player_id, Game game,int u) {
+        PriorityQueue<Option> priorityQueue = new PriorityQueue<>();
+        for (int j =0; j < 24; j++) {
+            Cor Gate_Cor = new Cor(7, -1.15 + (j * 0.1));
+            for (int i = 0; i < 1; i++) {
+                if (annoy(Player_Cor,Ball_Cor,Gate_Cor) == 1){
+                    int angle = find_angle(Player_Cor, find_tok(Ball_Cor, Gate_Cor, true));
+                    Option option = new Option(angle, player_id);
+                    option.score = -999;
+                    option.des = Gate_Cor;
+                    priorityQueue.add(option);
+                }
+                else if (i == 0) {
+                    //direct shoot with tok
+                    int angle = find_angle(Player_Cor, find_tok(Ball_Cor, Gate_Cor, true));
+                    Option option = new Option(angle, player_id);
+                    option.score = get_Score(Player_Cor, Ball_Cor, Gate_Cor, 0, player_id, game, option);
+                    option.des = Gate_Cor;
+                    priorityQueue.add(option);
+                }
+
             }
         }
         return priorityQueue;
@@ -414,13 +379,21 @@ class Strategy {
         for (int i = 0; i < 5; i++) {
 
             Cor player_cor = new Cor(game.getMyTeam().getPlayer(i).getPosition().getX(), game.getMyTeam().getPlayer(i).getPosition().getY());
-            if (player_cor.x > ball_cor.x) {
-                continue;
-            }
-            PriorityQueue<Option> tempo = Formula(player_cor, ball_cor, i, game);
-            priorityQueue.add(tempo.poll());
-            if (tempo.size()!=0){
+            if (player_cor.x > ball_cor.x ) {
+                    if (Distance(ball_cor.x,ball_cor.y,-7,0) > 6){
+                    System.out.println("BALL GATE:"+Distance(ball_cor.x,ball_cor.y,-7,0));
+                    PriorityQueue<Option> tempo = Formula(player_cor, ball_cor, i, game,1);
+                    priorityQueue.add(tempo.poll());
+                    if (tempo.size() != 0) {
+                        priorityQueue.add(tempo.poll());
+                    }
+                }
+            }else {
+                PriorityQueue<Option> tempo = Formula(player_cor, ball_cor, i, game);
                 priorityQueue.add(tempo.poll());
+                if (tempo.size() != 0) {
+                    priorityQueue.add(tempo.poll());
+                }
             }
         }
         System.out.println("Ball x:"+game.getBall().getPosition().getX()+",y:"+game.getBall().getPosition().getY());
@@ -473,14 +446,12 @@ class Strategy {
         int My_Score = game.getMyTeam().getScore();
         int Opp_Score = game.getOppTeam().getScore();
         if (Opp_Score != 0){
-            if (game.getCycle() - goal_period == goal_period){
+            if (game.getCycle()+1 - goal_period == goal_period){
                 best_option = priorityQueue.poll();
 
             }else{
                 goal_period = game.getCycle() - goal_period ;
             }
-        }else{
-            goal_period = game.getCycle();
         }
 //        int Check_cycle = 3 + (rnd.nextInt() % 2);
 //        if (My_Score < Opp_Score && myturns % Check_cycle == 0 && priorityQueue.size() >= 1 && C > 20) {
@@ -507,6 +478,7 @@ class Strategy {
             }
 
             Option option = optionPriorityQueue.poll();
+            System.out.println("id:"+option.player_id+",angle:"+option.angle+",diff:"+option.angle_diff+",score:"+option.score);
             if (option.score == -99) {
                 if (option.angle != 120) {
                     act.setAngle(120);
@@ -581,5 +553,68 @@ class Strategy {
  }else{
 
  }
+
+ */
+
+/*
+
+//    private static double find_annoy(Cor A, Cor B, boolean ball, int Player_id, Game game) {
+//        double annoys = 0;
+//        for (int i = 0; i < 5; i++) {
+//            if (i == Player_id) continue;
+//            double P_x = game.getMyTeam().getPlayer(i).getPosition().getX();
+//            double P_y = game.getMyTeam().getPlayer(i).getPosition().getY();
+//
+////            if (Player_id == 0&&i == 4) {
+////                System.out.println("O_o,1annoys:" + annoys + ",id:" + Player_id+",player_x:"+P_x+",player_y:"+P_y);
+////                System.out.println("O_o,X and Y of Player 4:,name:"+game.getMyTeam().getPlayer(Player_id).getName()+",x:"+game.getMyTeam().getPlayer(4).getPosition().getX()
+////                        +",y:"+game.getMyTeam().getPlayer(Player_id).getPosition().getY());
+////            }
+//            if (ball) {
+//                if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) <= 0.75) {
+//
+//                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
+//                        annoys++;
+//                    }
+//                }
+//            } else {
+//                if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) <= 1) {
+//                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
+//                        annoys += 1.1 - (Math.abs(0.5 - dotline(P_x, P_y, A.x, A.y, B.x, B.y)) * 2);
+//                    }
+//                }
+//            }
+////            if (Player_id == 0&&i == 4) {
+////                System.out.println("O_o,2annoys:" + annoys + ",id:" + Player_id+",player_X:"+P_x+",Player_Y:"+P_y);
+////            }
+//        }
+//        for (int i = 0; i < 5; i++) {
+//            double P_x = game.getOppTeam().getPlayer(i).getPosition().getX();
+//            double P_y = game.getOppTeam().getPlayer(i).getPosition().getY();
+//
+//            if (ball) {
+//                if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) <= 0.75) {
+//                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
+//                        annoys++;
+//                    }
+//                } else {
+////                    if (Player_id == 3 &&  i ==3) {
+////                        System.out.println("P_x:" + P_x + ",P_y:" + P_y + " ,and dotline:" + dotline(P_x, P_y, A.x, A.y, B.x, B.y) + ",Gate_y:" + B.y);
+////
+////                    }
+//                }
+//            } else {
+//
+//                if (Math.abs(dotline(P_x, P_y, A.x, A.y, B.x, B.y)) <= 1) {
+//                    if (Distance(A.x, A.y, B.x, B.y) <= Math.max(Distance(A.x, A.y, P_x, P_y), Distance(B.x, B.y, P_x, P_y))) {
+//                        annoys += 1.1 - (Math.abs(0.5 - dotline(P_x, P_y, A.x, A.y, B.x, B.y)) * 2);
+//                    }
+//                }
+//            }
+//        }
+////        System.out.println("annoys:"+annoys+" , id:"+ Player_id +" , Ax:"+A.x+", y:"+A.y +" , Bx:"+B.x+", y:"+B.y);
+//
+//        return annoys;
+//    }
 
  */
